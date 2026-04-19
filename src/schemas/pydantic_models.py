@@ -1,9 +1,10 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import Optional
 
 class Creds(BaseModel):
     email:str
     password:str
+
 
 class User(BaseModel):
     user_id:int=None
@@ -12,22 +13,22 @@ class User(BaseModel):
     email:str
     password:str
 
+
 class Room(BaseModel):
-    room_id:int = None
-    image:str = None
-    room_type:str
-    price:float
-    capacity:int
-    amenities:List[str] = []
+    room_no:int
+    room_type_id:str
+    status: str = "available"
+
 
 class Bookings(BaseModel):
-    email:str
-    room_id:int
-    room_type:str
+    user_id:Optional[int] = None
+    room_id:Optional[int] = None
     check_in:str
     check_out:str
     guests:int
     price:float
+    status: Optional[str] = "pending"
+
 
 class Payment(BaseModel):
     mode:str
