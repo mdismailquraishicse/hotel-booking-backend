@@ -57,10 +57,11 @@ class BookingDB:
 
         query = """
             SELECT
-                b.id, b.room_id, rt.type_name as room_type, b.check_in, b.check_out, b.guests, b.price, b.status
+                r.room_no, b.id, b.room_id, rt.type_name as room_type, b.check_in, b.check_out, b.guests, b.price, b.status
             FROM bookings b
             LEFT JOIN rooms r ON b.room_id = r.id
             LEFT JOIN room_type rt ON r.room_type_id = rt.id
+            ORDER BY b.created_at DESC;
         """
 
         cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -68,3 +69,4 @@ class BookingDB:
         data = cursor.fetchall()
         data = [dict(row) for row in data]
         return data
+    

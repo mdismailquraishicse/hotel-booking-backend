@@ -22,7 +22,9 @@ class Room(BaseModel):
 
 class Bookings(BaseModel):
     user_id:Optional[int] = None
-    room_id:Optional[int] = None
+    room_id: Optional[int] = None
+    room_no: Optional[str] = None
+    room_type_id:int
     check_in:str
     check_out:str
     guests:int
@@ -34,3 +36,9 @@ class Payment(BaseModel):
     mode:str
     card_no: str
     amount:float
+
+class RoomAvailability(BaseModel):
+    check_in:str
+    check_out:str
+    capacity:int
+    room_type_id:int

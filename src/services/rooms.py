@@ -38,3 +38,17 @@ class RoomService:
         room = room_db.find_room_by_id(conn=conn, id=id)
         return room
     
+
+    def fetch_rooms_to_book(self,
+                            conn,
+                            check_in,
+                            check_out,
+                            capacity,
+                            room_type_id):
+
+        return room_db.fetch_rooms2book(conn=conn,
+                                           check_in=check_in,
+                                           check_out=check_out,
+                                           capacity=capacity,
+                                           room_type_id=room_type_id)
+    

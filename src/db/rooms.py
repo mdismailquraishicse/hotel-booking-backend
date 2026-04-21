@@ -47,20 +47,20 @@ class RoomsDB:
 
         query = """
         SELECT
-        r.id AS room_id, r.image, r.type_name AS room_type, r.price, r.capacity, r.amenities, r.descriptions
-        FROM room_type r
+        rt.id AS room_type_id, rt.image, rt.type_name AS room_type, rt.price, rt.capacity, rt.amenities, rt.descriptions
+        FROM room_type rt
         WHERE 1=1
         """
 
         params = []
 
         if capacity:
-            query += " AND r.capacity >= %s"
+            query += " AND rt.capacity >= %s"
             params.append(capacity)
 
         if check_in and check_out:
             query += """
-            AND r.id NOT IN (
+            AND rt.id NOT IN (
                 SELECT b.room_id
                 FROM bookings b
                 WHERE NOT (
@@ -70,14 +70,14 @@ class RoomsDB:
             """
             params.extend([check_in, check_out])
 
-        query += " ORDER BY r.id, r.type_name, r.price ASC"
+        query += " ORDER BY rt.id, rt.type_name, rt.price ASC"
 
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute(query, params)
             data = cursor.fetchall()
             cursor.close()
             return data
-
+        
 
     def find_room_by_id(self, conn, id):
 
@@ -90,4 +90,32 @@ class RoomsDB:
             cursor.execute(query, (id,))
             room = cursor.fetchone()
             return room
+        
+
+    def fetch_rooms2book(self, conn, check_in, check_out, capacity, room_type_id):
+
+
+        query = """
+            SELECT
+                r.id,
+                r.room_no,
+                rt.type_name AS room_type
+            FROM rooms r
+            JOIN room_type rt
+                ON r.room_type_id = rt.id
+                AND rt.capacity >= %s
+                AND rt.id = %s
+            LEFT JOIN bookings b
+                ON b.room_id = r.id
+                AND b.check_in < %s
+                AND b.check_out > %s
+            WHERE b.id IS NULL
+        """
+
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(query, (capacity, room_type_id, check_out, check_in,))
+            data = cursor.fetchall()
+            data = [dict(row) for row in data]
+            print(f"data: {data}")
+            return data
 

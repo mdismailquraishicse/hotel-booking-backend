@@ -2,7 +2,7 @@ import traceback
 from typing import Optional
 from src.db.session import get_db
 from fastapi import APIRouter, Depends
-from src.schemas.pydantic_models import Room
+from src.schemas.pydantic_models import Room, RoomAvailability
 from src.services.rooms import RoomService
 
 
@@ -102,3 +102,13 @@ def get_room_by_id(id:int, conn=Depends(get_db)):
             "message" : str(e)
         }
 
+
+@router.post("/fetch-rooms-to-book")
+def fetch_rooms2book(available_rooms:RoomAvailability, conn = Depends(get_db)):
+    y = room_service.fetch_rooms2book(conn=conn,
+                                         check_in=available_rooms.check_in,
+                                         check_out=available_rooms.check_out,
+                                         capacity=available_rooms.capacity,
+                                         room_type_id=available_rooms.room_type_id)
+    print(y)
+    return y

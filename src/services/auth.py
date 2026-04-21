@@ -1,9 +1,8 @@
 import jwt
 import bcrypt
 import datetime
-from functools import wraps
 from src.db.auth import AuthDB
-from fastapi import HTTPException, Request
+from fastapi import HTTPException
 
 
 auth_db = AuthDB()
@@ -107,20 +106,3 @@ class AuthService:
                 status_code=400,
                 detail=f"Login failed: {str(e)}"
             )
-
-
-# Decorator to validate token
-def token_required(func):
-    @wraps(func)
-    def token_validator(*args, **kwargs):
-        request: Request = kwargs.get("request")
-        if not request:
-            raise HTTPException(status_code=400, detail="request missing")
-        token = request.headers.get("Authorization").split(" ")[-1]
-        if not token:
-            raise HTTPException(status_code=401, detail="token missing")
-        payload = jwt.decode(token, key="salt", algorithms="HS256")
-        print("token decoded successfully")
-        print(f"payload: {payload}")
-        return func(*args, **kwargs)
-    return token_validator

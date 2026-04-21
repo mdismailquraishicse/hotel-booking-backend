@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS rooms (
     id SERIAL PRIMARY KEY,
     room_no VARCHAR(10) UNIQUE,
     room_type_id INTEGER,
-    status VARCHAR(25),
-    created_at TIMESTAMP,
+    status VARCHAR(25) DEFAULT 'available',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
     is_active BOOLEAN DEFAULT true
 );
 
@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS bookings (
     guests INTEGER,
     price REAL,
     status VARCHAR(15),
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
 
     FOREIGN KEY (user_id)
         REFERENCES users(id)
@@ -62,6 +62,8 @@ CREATE TABLE IF NOT EXISTS bookings (
 
     CHECK (check_out >= check_in)
 );
+
+
 
 -- INSERT INTO room_type (image, type_name, price, capacity, amenities, descriptions)
 -- VALUES ('https://images.pexels.com/photos/7201513/pexels-photo-7201513.jpeg', 'Standard',
@@ -79,6 +81,24 @@ CREATE TABLE IF NOT EXISTS bookings (
 -- VALUES ('https://images.pexels.com/photos/7201513/pexels-photo-7201513.jpeg', 'Suite',
 -- 4000, 5, NULL, 'Basic room with 1 bed maximum 2 person allowed');
 
--- INSERT INTO room_type (image, type_name, price, capacity, amenities, descriptions)
--- VALUES ('https://images.pexels.com/photos/7201513/pexels-photo-7201513.jpeg', 'Standard',
--- 1000, 2, NULL, 'Basic room with 1 bed maximum 2 person allowed');
+
+
+-- INSERT ROOMS
+
+-- INSERT INTO rooms (room_no, room_type_id, status)
+-- VALUES (101, 1, 'available');
+
+-- INSERT INTO rooms (room_no, room_type_id, status)
+-- VALUES (102, 2, 'available');
+
+-- INSERT INTO rooms (room_no, room_type_id, status)
+-- VALUES (103, 3, 'available');
+
+-- INSERT INTO rooms (room_no, room_type_id, status)
+-- VALUES (104, 4, 'available');
+
+-- INSERT INTO rooms (room_no, room_type_id, status)
+-- VALUES (105, 5, 'available');
+
+-- INSERT INTO rooms (room_no, room_type_id, status)
+-- VALUES (106, 6, 'available');

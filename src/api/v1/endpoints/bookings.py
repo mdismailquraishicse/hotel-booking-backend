@@ -1,6 +1,7 @@
 import traceback
+from fastapi import APIRouter, Depends, Request
 from src.db.session import get_db
-from fastapi import APIRouter, Depends
+from src.core.utils import token_required
 from src.schemas.pydantic_models import Bookings
 from src.services.bookings import BookingService
 
@@ -9,17 +10,21 @@ booking_service = BookingService()
 
 
 @router.post("/book-now")
-def bookings(booking:Bookings, conn=Depends(get_db)):
+@token_required
+def bookings(request:Request, booking:Bookings, conn=Depends(get_db)):
+
     try:
+        booking.user_id = request.state.user_id
         booked = booking_service.book(booking=booking, conn=conn)
         conn.commit()
         return {
             "status" : "success",
-            "result" : booked,
+            "result" : booked.get("result"),
             "error" : None,
-            "message" : "Room booked successfully"
+            "message" : booked.get("message")
         }
     except Exception as e:
+        print(f"error: {e}")
         return {
             "status" : "failed",
             "result" : False,
@@ -29,7 +34,8 @@ def bookings(booking:Bookings, conn=Depends(get_db)):
 
 
 @router.get("/fetch-bookings")
-def bookings(conn=Depends(get_db)):
+@token_required
+def bookings(request:Request, conn=Depends(get_db)):
 
     try:
         booking_data = booking_service.fetch_bookings(conn=conn)
@@ -49,7 +55,8 @@ def bookings(conn=Depends(get_db)):
     
 
 @router.delete("/delete-booking/{booking_id}")
-def delete_booking(booking_id, conn=Depends(get_db)):
+@token_required
+def delete_booking(request:Request, booking_id, conn=Depends(get_db)):
 
     try:
         deleted = booking_service.delete_booking(conn = conn, booking_id = booking_id)
@@ -66,5 +73,6 @@ def delete_booking(booking_id, conn=Depends(get_db)):
     
 
 @router.get("/get-bookings-by-email/{email}")
-def get_booking_by_email(email:str, conn=Depends(get_db)):
+@token_required
+def get_booking_by_email(request:Request, email:str, conn=Depends(get_db)):
     pass
