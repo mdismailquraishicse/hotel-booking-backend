@@ -32,11 +32,6 @@ class Bookings(BaseModel):
     status: Optional[str] = "pending"
 
 
-class Payment(BaseModel):
-    mode:str
-    card_no: str
-    amount:float
-
 class RoomAvailability(BaseModel):
     check_in:str
     check_out:str
