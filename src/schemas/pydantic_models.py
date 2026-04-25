@@ -37,3 +37,12 @@ class RoomAvailability(BaseModel):
     check_out:str
     capacity:int
     room_type_id:int
+
+class Payment(BaseModel):
+    booking_id:str
+    amount:float
+    desc:str
+    cust_id:int=None
+    cust_name:str=None
+    cust_email:str=None
+    cust_mobile:str=None
