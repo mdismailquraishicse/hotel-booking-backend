@@ -63,6 +63,15 @@ CREATE TABLE IF NOT EXISTS bookings (
     CHECK (check_out >= check_in)
 );
 
+CREATE TABLE IF NOT EXISTS payments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    booking_id UUID,
+    amount REAL,
+    descriptions VARCHAR(100),
+    user_id INTEGER,
+    status VARCHAR(25)
+)
+
 
 
 -- INSERT INTO room_type (image, type_name, price, capacity, amenities, descriptions)
