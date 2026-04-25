@@ -14,8 +14,10 @@ booking_service = BookingService()
 def bookings(request:Request, booking:Bookings, conn=Depends(get_db)):
 
     try:
-        booking.user_id = request.state.user_id
-        booked = booking_service.book(booking=booking, conn=conn)
+        booked = booking_service.book(
+            user_id = request.state.user_id,
+            booking = booking,
+            conn = conn)
         conn.commit()
         return {
             "status" : "success",
@@ -27,7 +29,7 @@ def bookings(request:Request, booking:Bookings, conn=Depends(get_db)):
         print(f"error: {e}")
         return {
             "status" : "failed",
-            "result" : False,
+            "result" : "",
             "error" : traceback.format_exc(),
             "message" : str(e)
         }

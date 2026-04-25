@@ -9,24 +9,28 @@ class BookingDB:
         pass
         
 
-    def book(self, conn, booking):
+    def book(self, user_id, room_id, conn, booking):
 
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             query = """
                 INSERT INTO bookings (user_id, room_id, check_in, check_out, guests, price, status)
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
+                RETURNING id
             """
 
-            values = (booking.user_id,
-                    booking.room_id,
-                    booking.check_in,
-                    booking.check_out,
-                    booking.guests,
-                    booking.price,
-                    booking.status)
+            values = (
+                user_id,
+                room_id,
+                booking.check_in,
+                booking.check_out,
+                booking.guests,
+                booking.price,
+                booking.status)
 
-            with conn.cursor() as cursor:
+            with conn.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(query, values)
+                result = cursor.fetchone()
+                return result
             
         
     def delete_booking(self, conn, booking_id):
@@ -37,7 +41,7 @@ class BookingDB:
             WHERE id = %s
         """
 
-        with conn.cursor() as cursor:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute(query, (booking_id,))
             print(f"rowcount: {cursor.rowcount}")
             if cursor.rowcount == 0:

@@ -13,7 +13,7 @@ class BookingService:
         pass
 
 
-    def book(self, conn, booking):
+    def book(self, user_id, conn, booking):
         available_rooms = rooms_db.fetch_rooms2book(conn=conn,
                                   check_in=booking.check_in,
                                   check_out=booking.check_out,
@@ -22,16 +22,16 @@ class BookingService:
         print(f"available rooms: {available_rooms}")
         if not available_rooms:
             return {
-                "result": False,
+                "result": "",
                 "message": "Room not available"
             }
         
-        booking.room_id = available_rooms[0].get("id")
-        booking.room_no = available_rooms[0].get("room_no")
-
-        booking_db.book(conn=conn, booking=booking)
+        room_id = available_rooms[0].get("id")
+        booking_response = booking_db.book(user_id = user_id,
+                             room_id = room_id,
+                             conn=conn, booking=booking)
         return {
-                "result": True,
+                "result": booking_response.get("id"),
                 "message": "Room booked successfully"
             }
 
