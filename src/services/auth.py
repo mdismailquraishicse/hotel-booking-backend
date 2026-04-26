@@ -1,8 +1,8 @@
 import jwt
 import bcrypt
-import datetime
 from src.db.auth import AuthDB
 from fastapi import HTTPException
+from datetime import datetime, timedelta, timezone
 
 
 auth_db = AuthDB()
@@ -10,11 +10,13 @@ auth_db = AuthDB()
 class AuthService:
 
     def __init__(self):
+
         self.salt = "salt"
         self.encryption_algorithm = "HS256"
 
 
     def password_encrypt(self, password:str):
+
         if not password:
             print(f"password is None: {password}")
             return
@@ -40,12 +42,14 @@ class AuthService:
     def register_user(self, conn, user):
 
         try:
+
             user.password = self.password_encrypt(user.password)
             reg_response = auth_db.register_user(conn=conn, user=user)
             print(f"reg_response: {reg_response}")
             conn.commit()
             return reg_response
         except Exception as e:
+
             print(f"Unknown exception occured: {e}")
             if conn:
                 conn.rollback()
@@ -72,6 +76,7 @@ class AuthService:
     def login(self, conn, creds):
 
         try:
+
             fetch_creds = auth_db.fetch_user_creds(conn=conn, email=creds.email)
             if not fetch_creds:
                 return {
@@ -80,7 +85,8 @@ class AuthService:
                     "message": "User not found"
                 }
 
-            hashed_pass = fetch_creds[2]
+            hashed_pass = fetch_creds.get("password")
+            print(f"authenticating...")
             authenticated = self.password_validate(creds.password, hashed_pass)
             if not authenticated:
                 return {
@@ -89,19 +95,25 @@ class AuthService:
                     "message" : "Invalid credentials"
                 }
             
+            print(f"user authenticated successfully")
             payload = {
-                "user_id": fetch_creds[0],
+                "user_id": fetch_creds.get("id"),
                 "email": creds.email,
-                "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=3600)
+                "fullname": fetch_creds.get("fullname"),
+                "gender": fetch_creds.get("gender"),
+                "mobile": fetch_creds.get("mobile"),
+                "exp": datetime.now(timezone.utc) + timedelta(days=7)
             }
 
             token = self.generate_token(payload=payload)
+            print(f"token generated successfully")
             return {
                 "status" : "success",
                 "result" : token,
                 "message" : "Login successful"
             }
         except Exception as e:
+
             raise HTTPException(
                 status_code=400,
                 detail=f"Login failed: {str(e)}"
