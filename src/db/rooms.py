@@ -103,19 +103,18 @@ class RoomsDB:
             FROM rooms r
             JOIN room_type rt
                 ON r.room_type_id = rt.id
-                AND rt.capacity >= %s
-                AND rt.id = %s
             LEFT JOIN bookings b
                 ON b.room_id = r.id
                 AND b.check_in < %s
                 AND b.check_out > %s
-            WHERE b.id IS NULL
+            WHERE
+                rt.id = %s
+                AND b.id IS NULL
         """
 
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-            cursor.execute(query, (capacity, room_type_id, check_out, check_in,))
+            cursor.execute(query, (check_out, check_in, room_type_id, ))
             data = cursor.fetchall()
             data = [dict(row) for row in data]
-            print(f"data: {data}")
             return data
 
