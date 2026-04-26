@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS users (
     fullname TEXT,
     gender TEXT,
     email TEXT UNIQUE,
-    password TEXT
+    password TEXT,
+    mobile VARCHAR(15)
 );
 
 CREATE TABLE IF NOT EXISTS room_type (
