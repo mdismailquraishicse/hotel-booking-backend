@@ -78,3 +78,15 @@ def delete_booking(request:Request, booking_id, conn=Depends(get_db)):
 @token_required
 def get_booking_by_email(request:Request, email:str, conn=Depends(get_db)):
     pass
+
+
+@router.get("/update-status")
+def update_status(conn = Depends(get_db)):
+
+    try:
+        result = booking_service.update_booking_status(conn=conn)
+        conn.commit()
+        return result
+    except Exception as e:
+
+        print(f"exception: {e}")

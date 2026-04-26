@@ -74,3 +74,31 @@ class BookingDB:
         data = [dict(row) for row in data]
         return data
     
+
+    def get_pending_booking_ids(self, conn, status):
+
+        query = """
+        SELECT id
+        FROM bookings
+        WHERE status = %s
+        """
+
+        with conn.cursor(cursor_factory = RealDictCursor) as cursor:
+
+            cursor.execute(query, (status, ))
+            return cursor.fetchall()
+    
+
+    def update_status(self, booking_id, conn):
+        
+        query = """
+            UPDATE bookings
+            SET status = 'confirmed'
+            WHERE id = %s
+            RETURNING id
+        """
+
+        with conn.cursor(cursor_factory = RealDictCursor) as cursor:
+
+            cursor.execute(query, (booking_id, ))
+            return cursor.fetchone()

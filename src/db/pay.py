@@ -62,4 +62,20 @@ class PaymentDB:
             cursor.execute(query, (razor_id, status,))
             result = cursor.fetchone()
             return result
+        
+
+    def fetch_status_by_booking_id(self, conn, booking_id):
+
+        query = """
+            SELECT
+                id, status
+            FROM payments
+            WHERE booking_id = %s
+        """
+
+        with conn.cursor(cursor_factory = RealDictCursor) as cursor:
+
+            cursor.execute(query, (booking_id, ))
+            result = cursor.fetchone()
+            return result
             
