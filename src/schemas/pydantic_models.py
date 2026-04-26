@@ -21,13 +21,10 @@ class Room(BaseModel):
 
 
 class Bookings(BaseModel):
-    user_id:Optional[int] = None
-    room_id: Optional[int] = None
-    room_no: Optional[str] = None
     room_type_id:int
     check_in:str
     check_out:str
-    guests:int
+    guests: int
     price:float
     status: Optional[str] = "pending"
 
@@ -39,10 +36,7 @@ class RoomAvailability(BaseModel):
     room_type_id:int
 
 class Payment(BaseModel):
+
     booking_id:str
     amount:float
     desc:str
-    cust_id:int=None
-    cust_name:str=None
-    cust_email:str=None
-    cust_mobile:str=None
