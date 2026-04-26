@@ -35,6 +35,7 @@ def create_payment_link(request: Request, payment:Payment, conn=Depends(get_db))
     except Exception as e:
 
         print(f"exception occured: {e}")
+        conn.rollback()
         return {
             "status": "failed",
             "result": None,
@@ -63,4 +64,27 @@ def check_payment_status(link_id):
             "result": None,
             "error": traceback.format_exc(),
             "message": str(e)
+        }
+    
+
+@router.get("/update-status")
+def update_payment_status(conn = Depends(get_db)):
+
+    try:
+        result = payment_gateway.update_status(conn=conn)
+        conn.commit()
+        return {
+            "status": "success",
+            "result": result,
+            "message": "Payment status updated successfully",
+            "error": None
+        }
+    except Exception as e:
+
+        conn.rollback()
+        return {
+            "status": "success",
+            "result": result,
+            "message": str(e),
+            "error": traceback.format_exc()
         }

@@ -9,11 +9,11 @@ class PaymentDB:
     def __init__(self):
         pass
 
-    def insert_payment(self, conn, user_id, payment):
+    def insert_payment(self, conn, razor_id, user_id, payment):
 
         query = """
-            INSERT INTO payments (booking_id, user_id, amount, descriptions, status)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO payments (razor_id, booking_id, user_id, amount, descriptions, status)
+            VALUES (%s, %s, %s, %s, %s, %s)
             RETURNING id
         """
 
@@ -21,6 +21,7 @@ class PaymentDB:
 
             cursor.execute(
                 query, (
+                    razor_id,
                     payment.booking_id,
                     user_id,
                     payment.amount,
@@ -28,5 +29,37 @@ class PaymentDB:
                     "created"))
             result = cursor.fetchone()
 
+            return result
+        
+
+    def get_razor_ids(self, conn, status):
+
+        query = """
+            SELECT
+                id, razor_id
+            FROM payments
+            WHERE status = %s
+        """
+
+        with conn.cursor(cursor_factory = RealDictCursor) as cursor:
+
+            cursor.execute(query, (status,))
+            result = cursor.fetchall()
+            return result
+        
+
+    def update_status(self, razor_id, status, conn):
+        
+        query = """
+        UPDATE payments
+        SET status = %s
+        WHERE razor_id = %s
+        RETURNING id
+        """
+
+        with conn.cursor(cursor_factory = RealDictCursor) as cursor:
+
+            cursor.execute(query, (razor_id, status,))
+            result = cursor.fetchone()
             return result
             
