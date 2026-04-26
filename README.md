@@ -33,7 +33,7 @@ src/
 ## 🐳 Setup (Docker)
 ### 1. Clone the repo
 ```
-git clone <your-repo-url>
+git clone git@github.com:mdismailquraishicse/hotel-booking-backend.git
 cd hotel-booking-backend
 ```
 ### 2. Create .env
