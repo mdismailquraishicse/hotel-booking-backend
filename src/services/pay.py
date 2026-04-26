@@ -1,8 +1,11 @@
 import os
 import razorpay
+from src.db.pay import PaymentDB
 
 
 
+
+payment_db = PaymentDB()
 
 class RazorPaymentGateway:
 
@@ -16,21 +19,22 @@ class RazorPaymentGateway:
         self.client = razorpay.Client(auth=(self.payment_key, self.payment_secret))
 
 
-    def create_payment(self, payment):
+    def create_payment(self, user_id, name, email, mobile, payment, conn):
 
         """
             Docstr
         """
 
+        multiplier = 100
         created_payment = self.client.payment_link.create({
-            "amount": payment.amount,
+            "amount": payment.amount * multiplier,
             "currency": "INR",
             "description": payment.desc,
             "reference_id": str(payment.booking_id),
             "customer": {
-                "name": payment.name,
-                "email": payment.email,
-                "contact": payment.mobile
+                "name": name,
+                "email": email,
+                "contact": mobile
             },
             "notify": {
                 "sms": False,
@@ -39,5 +43,24 @@ class RazorPaymentGateway:
         })
 
         print(f"payment created: {created_payment}")
-        return created_payment["short_url"]
+        print(f"inserting payment data into payment table...")
+        db_response = payment_db.insert_payment(
+            user_id= user_id,
+            payment= payment,
+            conn = conn
+            )
 
+        result = {
+            "payment_id": db_response.get("id"),
+            "razor_id": created_payment.get("id"),
+            "payment_link": created_payment.get("short_url")
+        }
+
+        return result
+
+
+    def check_payment_details(self, link_id):
+
+        payment_link = self.client.payment_link.fetch(link_id)
+        print(f"payment link: {payment_link}")
+        return payment_link.get("status")
