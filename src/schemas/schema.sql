@@ -79,19 +79,19 @@ CREATE TABLE IF NOT EXISTS payments (
 
 
 -- INSERT INTO room_type (image, type_name, price, capacity, amenities, descriptions)
--- VALUES ('https://images.pexels.com/photos/7201513/pexels-photo-7201513.jpeg', 'Standard',
+-- VALUES ('https://images.pexels.com/photos/8135505/pexels-photo-8135505.jpeg', 'Standard',
 -- 1000, 2, NULL, 'Basic room with 1 bed maximum 2 person allowed');
 
 -- INSERT INTO room_type (image, type_name, price, capacity, amenities, descriptions)
--- VALUES ('https://images.pexels.com/photos/7201513/pexels-photo-7201513.jpeg', 'Deluxe',
+-- VALUES ('https://images.pexels.com/photos/36353419/pexels-photo-36353419.png', 'Deluxe',
 -- 2000, 2, NULL, 'Basic room with 1 bed maximum 2 person allowed');
 
 -- INSERT INTO room_type (image, type_name, price, capacity, amenities, descriptions)
--- VALUES ('https://images.pexels.com/photos/7201513/pexels-photo-7201513.jpeg', 'Premium',
+-- VALUES ('https://images.pexels.com/photos/36676878/pexels-photo-36676878.jpeg', 'Premium',
 -- 3000, 2, NULL, 'Basic room with 1 bed maximum 2 person allowed');
 
 -- INSERT INTO room_type (image, type_name, price, capacity, amenities, descriptions)
--- VALUES ('https://images.pexels.com/photos/7201513/pexels-photo-7201513.jpeg', 'Suite',
+-- VALUES ('https://images.pexels.com/photos/20771843/pexels-photo-20771843.jpeg', 'Suite',
 -- 4000, 5, NULL, 'Basic room with 1 bed maximum 2 person allowed');
 
 
